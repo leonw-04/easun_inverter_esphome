@@ -1,13 +1,13 @@
-#include "pipsolar_output.h"
+#include "easun_inverter_output.h"
 #include "esphome/core/log.h"
 #include "esphome/core/helpers.h"
 
 namespace esphome {
-namespace pipsolar {
+namespace easun_inverter {
 
-static const char *const TAG = "pipsolar.output";
+static const char *const TAG = "easun_inverter.output";
 
-void PipsolarOutput::write_state(float state) {
+void easun_inverterOutput::write_state(float state) {
   char tmp[10];
   sprintf(tmp, this->set_command_.c_str(), state);
 
@@ -18,5 +18,5 @@ void PipsolarOutput::write_state(float state) {
     ESP_LOGD(TAG, "Will not write: %s as it is not in list of allowed values", tmp);
   }
 }
-}  // namespace pipsolar
+}  // namespace easun_inverter
 }  // namespace esphome

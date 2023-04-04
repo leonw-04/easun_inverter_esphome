@@ -1,24 +1,24 @@
-#include "pipsolar.h"
+#include "easun_inverter.h"
 #include "esphome/core/log.h"
 
 namespace esphome {
-namespace pipsolar {
+namespace easun_inverter {
 
-static const char *const TAG = "pipsolar";
+static const char *const TAG = "easun_inverter";
 
-void Pipsolar::setup() {
+void easun_inverter::setup() {
   this->state_ = STATE_IDLE;
   this->command_start_millis_ = 0;
 }
 
-void Pipsolar::empty_uart_buffer_() {
+void easun_inverter::empty_uart_buffer_() {
   uint8_t byte;
   while (this->available()) {
     this->read_byte(&byte);
   }
 }
 
-void Pipsolar::loop() {
+void easun_inverter::loop() {
   // Read message
   if (this->state_ == STATE_IDLE) {
     this->empty_uart_buffer_();
@@ -422,7 +422,7 @@ void Pipsolar::loop() {
   if (this->state_ == STATE_POLL_CHECKED) {
     bool enabled = true;
     std::string fc;
-    char tmp[PIPSOLAR_READ_BUFFER_LENGTH];
+    char tmp[easun_inverter_READ_BUFFER_LENGTH];
     sprintf(tmp, "%s", this->read_buffer_);
     switch (this->used_polling_commands_[this->last_polling_command_].identifier) {
       case POLLING_QPIRI:
@@ -716,7 +716,7 @@ void Pipsolar::loop() {
       uint8_t byte;
       this->read_byte(&byte);
 
-      if (this->read_pos_ == PIPSOLAR_READ_BUFFER_LENGTH) {
+      if (this->read_pos_ == easun_inverter_READ_BUFFER_LENGTH) {
         this->read_pos_ = 0;
         this->empty_uart_buffer_();
       }
@@ -737,7 +737,7 @@ void Pipsolar::loop() {
     }  // available
   }
   if (this->state_ == STATE_COMMAND) {
-    if (millis() - this->command_start_millis_ > esphome::pipsolar::Pipsolar::COMMAND_TIMEOUT) {
+    if (millis() - this->command_start_millis_ > esphome::easun_inverter::easun_inverter::COMMAND_TIMEOUT) {
       // command timeout
       const char *command = this->command_queue_[this->command_queue_position_].c_str();
       this->command_start_millis_ = millis();
@@ -750,7 +750,7 @@ void Pipsolar::loop() {
     }
   }
   if (this->state_ == STATE_POLL) {
-    if (millis() - this->command_start_millis_ > esphome::pipsolar::Pipsolar::COMMAND_TIMEOUT) {
+    if (millis() - this->command_start_millis_ > esphome::easun_inverter::easun_inverter::COMMAND_TIMEOUT) {
       // command timeout
       ESP_LOGD(TAG, "timeout command to poll: %s", this->used_polling_commands_[this->last_polling_command_].command);
       this->state_ = STATE_IDLE;
@@ -759,19 +759,19 @@ void Pipsolar::loop() {
   }
 }
 
-uint8_t Pipsolar::check_incoming_length_(uint8_t length) {
+uint8_t easun_inverter::check_incoming_length_(uint8_t length) {
   if (this->read_pos_ - 3 == length) {
     return 1;
   }
   return 0;
 }
 
-uint8_t Pipsolar::check_incoming_crc_() {
+uint8_t easun_inverter::check_incoming_crc_() {
   return 1;
 }
 
 // send next command used
-uint8_t Pipsolar::send_next_command_() {
+uint8_t easun_inverter::send_next_command_() {
   uint16_t crc16;
   if (this->command_queue_[this->command_queue_position_].length() != 0) {
     const char *command = this->command_queue_[this->command_queue_position_].c_str();
@@ -797,7 +797,7 @@ uint8_t Pipsolar::send_next_command_() {
   return 0;
 }
 
-void Pipsolar::send_next_poll_() {
+void easun_inverter::send_next_poll_() {
   uint16_t crc16;
   this->last_polling_command_ = (this->last_polling_command_ + 1) % 15;
   if (this->used_polling_commands_[this->last_polling_command_].length == 0) {
@@ -825,7 +825,7 @@ void Pipsolar::send_next_poll_() {
            this->used_polling_commands_[this->last_polling_command_].length);
 }
 
-void Pipsolar::queue_command_(const char *command, uint8_t length) {
+void easun_inverter::queue_command_(const char *command, uint8_t length) {
   uint8_t next_position = command_queue_position_;
   for (uint8_t i = 0; i < COMMAND_QUEUE_LENGTH; i++) {
     uint8_t testposition = (next_position + i) % COMMAND_QUEUE_LENGTH;
@@ -839,12 +839,12 @@ void Pipsolar::queue_command_(const char *command, uint8_t length) {
   ESP_LOGD(TAG, "Command queue full dropping command: %s", command);
 }
 
-void Pipsolar::switch_command(const std::string &command) {
+void easun_inverter::switch_command(const std::string &command) {
   ESP_LOGD(TAG, "got command: %s", command.c_str());
   queue_command_(command.c_str(), command.length());
 }
-void Pipsolar::dump_config() {
-  ESP_LOGCONFIG(TAG, "Pipsolar:");
+void easun_inverter::dump_config() {
+  ESP_LOGCONFIG(TAG, "easun_inverter:");
   ESP_LOGCONFIG(TAG, "used commands:");
   for (auto &used_polling_command : this->used_polling_commands_) {
     if (used_polling_command.length != 0) {
@@ -852,9 +852,9 @@ void Pipsolar::dump_config() {
     }
   }
 }
-void Pipsolar::update() {}
+void easun_inverter::update() {}
 
-void Pipsolar::add_polling_command_(const char *command, ENUMPollingCommand polling_command) {
+void easun_inverter::add_polling_command_(const char *command, ENUMPollingCommand polling_command) {
   for (auto &used_polling_command : this->used_polling_commands_) {
     if (used_polling_command.length == strlen(command)) {
       uint8_t len = strlen(command);
@@ -879,7 +879,7 @@ void Pipsolar::add_polling_command_(const char *command, ENUMPollingCommand poll
   }
 }
 
-uint16_t Pipsolar::cal_crc_half_(uint8_t *msg, uint8_t len) {
+uint16_t easun_inverter::cal_crc_half_(uint8_t *msg, uint8_t len) {
   uint16_t crc;
 
   uint8_t da;
@@ -916,5 +916,5 @@ uint16_t Pipsolar::cal_crc_half_(uint8_t *msg, uint8_t len) {
   return (crc);
 }
 
-}  // namespace pipsolar
+}  // namespace easun_inverter
 }  // namespace esphome

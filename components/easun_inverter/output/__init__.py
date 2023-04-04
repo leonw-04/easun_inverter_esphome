@@ -3,12 +3,12 @@ import esphome.config_validation as cv
 from esphome import automation
 from esphome.components import output
 from esphome.const import CONF_ID, CONF_VALUE
-from .. import PIPSOLAR_COMPONENT_SCHEMA, CONF_PIPSOLAR_ID, pipsolar_ns
+from .. import easun_inverter_COMPONENT_SCHEMA, CONF_easun_inverter_ID, easun_inverter_ns
 
-DEPENDENCIES = ["pipsolar"]
+DEPENDENCIES = ["easun_inverter"]
 
-PipsolarOutput = pipsolar_ns.class_("PipsolarOutput", output.FloatOutput)
-SetOutputAction = pipsolar_ns.class_("SetOutputAction", automation.Action)
+easun_inverterOutput = easun_inverter_ns.class_("easun_inverterOutput", output.FloatOutput)
+SetOutputAction = easun_inverter_ns.class_("SetOutputAction", automation.Action)
 
 CONF_POSSIBLE_VALUES = "possible_values"
 
@@ -59,11 +59,11 @@ TYPES = {
     ),
 }
 
-CONFIG_SCHEMA = PIPSOLAR_COMPONENT_SCHEMA.extend(
+CONFIG_SCHEMA = easun_inverter_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(type): output.FLOAT_OUTPUT_SCHEMA.extend(
             {
-                cv.Required(CONF_ID): cv.declare_id(PipsolarOutput),
+                cv.Required(CONF_ID): cv.declare_id(easun_inverterOutput),
                 cv.Optional(CONF_POSSIBLE_VALUES, default=values): cv.All(
                     cv.ensure_list(cv.positive_float), cv.Length(min=1)
                 ),
@@ -75,7 +75,7 @@ CONFIG_SCHEMA = PIPSOLAR_COMPONENT_SCHEMA.extend(
 
 
 async def to_code(config):
-    paren = await cg.get_variable(config[CONF_PIPSOLAR_ID])
+    paren = await cg.get_variable(config[CONF_easun_inverter_ID])
 
     for type, (_, command) in TYPES.items():
         if type in config:
@@ -89,7 +89,7 @@ async def to_code(config):
 
 
 @automation.register_action(
-    "output.pipsolar.set_level",
+    "output.easun_inverter.set_level",
     SetOutputAction,
     cv.Schema(
         {
@@ -98,7 +98,7 @@ async def to_code(config):
         }
     ),
 )
-def output_pipsolar_set_level_to_code(config, action_id, template_arg, args):
+def output_easun_inverter_set_level_to_code(config, action_id, template_arg, args):
     paren = yield cg.get_variable(config[CONF_ID])
     var = cg.new_Pvariable(action_id, template_arg, paren)
     template_ = yield cg.templatable(config[CONF_VALUE], args, float)

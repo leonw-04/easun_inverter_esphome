@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import text_sensor
-from .. import CONF_PIPSOLAR_ID, PIPSOLAR_COMPONENT_SCHEMA
+from .. import CONF_easun_inverter_ID, easun_inverter_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["uart"]
 
@@ -25,13 +25,13 @@ TYPES = [
     CONF_LAST_QMN,
 ]
 
-CONFIG_SCHEMA = PIPSOLAR_COMPONENT_SCHEMA.extend(
+CONFIG_SCHEMA = easun_inverter_COMPONENT_SCHEMA.extend(
     {cv.Optional(type): text_sensor.text_sensor_schema() for type in TYPES}
 )
 
 
 async def to_code(config):
-    paren = await cg.get_variable(config[CONF_PIPSOLAR_ID])
+    paren = await cg.get_variable(config[CONF_easun_inverter_ID])
 
     for type in TYPES:
         if type in config:

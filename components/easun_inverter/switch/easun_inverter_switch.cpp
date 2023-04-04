@@ -1,14 +1,14 @@
-#include "pipsolar_switch.h"
+#include "easun_inverter_switch.h"
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
 
 namespace esphome {
-namespace pipsolar {
+namespace easun_inverter {
 
-static const char *const TAG = "pipsolar.switch";
+static const char *const TAG = "easun_inverter.switch";
 
-void PipsolarSwitch::dump_config() { LOG_SWITCH("", "Pipsolar Switch", this); }
-void PipsolarSwitch::write_state(bool state) {
+void easun_inverterSwitch::dump_config() { LOG_SWITCH("", "easun_inverter Switch", this); }
+void easun_inverterSwitch::write_state(bool state) {
   if (state) {
     if (this->on_command_.length() > 0) {
       this->parent_->switch_command(this->on_command_);
@@ -20,5 +20,5 @@ void PipsolarSwitch::write_state(bool state) {
   }
 }
 
-}  // namespace pipsolar
+}  // namespace easun_inverter
 }  // namespace esphome

@@ -8,19 +8,19 @@ CODEOWNERS = ["@andreashergert1984"]
 AUTO_LOAD = ["binary_sensor", "text_sensor", "sensor", "switch", "output"]
 MULTI_CONF = True
 
-CONF_PIPSOLAR_ID = "pipsolar_id"
+CONF_easun_inverter_ID = "easun_inverter_id"
 
-pipsolar_ns = cg.esphome_ns.namespace("pipsolar")
-PipsolarComponent = pipsolar_ns.class_("Pipsolar", cg.Component)
+easun_inverter_ns = cg.esphome_ns.namespace("easun_inverter")
+easun_inverterComponent = easun_inverter_ns.class_("easun_inverter", cg.Component)
 
-PIPSOLAR_COMPONENT_SCHEMA = cv.Schema(
+easun_inverter_COMPONENT_SCHEMA = cv.Schema(
     {
-        cv.Required(CONF_PIPSOLAR_ID): cv.use_id(PipsolarComponent),
+        cv.Required(CONF_easun_inverter_ID): cv.use_id(easun_inverterComponent),
     }
 )
 
 CONFIG_SCHEMA = cv.All(
-    cv.Schema({cv.GenerateID(): cv.declare_id(PipsolarComponent)})
+    cv.Schema({cv.GenerateID(): cv.declare_id(easun_inverterComponent)})
     .extend(cv.polling_component_schema("1s"))
     .extend(uart.UART_DEVICE_SCHEMA)
 )

@@ -2,7 +2,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import switch
 from esphome.const import ICON_POWER
-from .. import CONF_PIPSOLAR_ID, PIPSOLAR_COMPONENT_SCHEMA, pipsolar_ns
+from .. import CONF_easun_inverter_ID, easun_inverter_COMPONENT_SCHEMA, easun_inverter_ns
 
 DEPENDENCIES = ["uart"]
 
@@ -22,19 +22,19 @@ TYPES = {
     CONF_PV_POWER_BALANCE: ("PSPB1", "PSPB0"),
 }
 
-PipsolarSwitch = pipsolar_ns.class_("PipsolarSwitch", switch.Switch, cg.Component)
+easun_inverterSwitch = easun_inverter_ns.class_("easun_inverterSwitch", switch.Switch, cg.Component)
 
 PIPSWITCH_SCHEMA = switch.switch_schema(
-    PipsolarSwitch, icon=ICON_POWER, block_inverted=True
+    easun_inverterSwitch, icon=ICON_POWER, block_inverted=True
 ).extend(cv.COMPONENT_SCHEMA)
 
-CONFIG_SCHEMA = PIPSOLAR_COMPONENT_SCHEMA.extend(
+CONFIG_SCHEMA = easun_inverter_COMPONENT_SCHEMA.extend(
     {cv.Optional(type): PIPSWITCH_SCHEMA for type in TYPES}
 )
 
 
 async def to_code(config):
-    paren = await cg.get_variable(config[CONF_PIPSOLAR_ID])
+    paren = await cg.get_variable(config[CONF_easun_inverter_ID])
 
     for type, (on, off) in TYPES.items():
         if type in config:
